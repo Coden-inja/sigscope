@@ -68,8 +68,8 @@ export default function Header({
           <User size={18} />
         </span>
         <div>
-          <b style={{ fontSize: 12 }}>Analyst</b>
-          <small style={{ display: 'block', color: '#6b7280', fontSize: 10 }}>NTRO</small>
+          <b style={{ fontSize: 12 }}>Operator</b>
+          <small style={{ display: 'block', color: '#6b7280', fontSize: 10 }}>Team 145380</small>
         </div>
         <ChevronDown size={14} />
 
@@ -79,17 +79,17 @@ export default function Header({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="dropdown-header">
-              <b>Analyst NTRO-145380</b>
-              <small>Station: Local Workstation (Air-Gapped)</small>
+              <b>Team Toll Tax (ID: 145380)</b>
+              <small>Station: Air-Gapped Localhost</small>
             </div>
             <div className="dropdown-item">
-              <Shield size={14} color="#1f9d6b" /> Clearance: Tier-1 TS/SCI
+              <Shield size={14} color="#1f9d6b" /> SIH 2026 Space Technology
             </div>
             <div className="dropdown-item">
-              <Lock size={14} color="#6b7280" /> Air-Gap Status: Active
+              <Lock size={14} color="#6b7280" /> Air-Gap Status: Active (Zero Egress)
             </div>
             <div className="dropdown-item" style={{ color: '#1f9d6b' }}>
-              <Check size={14} /> Local DSP Engine: {mockMode ? 'Mock Emulated' : 'Real Active'}
+              <Check size={14} /> DSP Engine: {mockMode ? 'Mock Emulated' : 'Real Active'}
             </div>
           </div>
         )}

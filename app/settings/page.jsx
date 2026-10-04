@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
 import { 
@@ -7,49 +7,53 @@ import {
   Lock, Save, RefreshCcw, CheckCircle2, Radio, HardDrive, Info
 } from 'lucide-react';
 
+const DEFAULT_CONFIG = {
+  fftRadix: 'Radix-2 Cooley-Tukey (SciPy / NumPy FFT)',
+  welchAverages: '8',
+  cfoSearchRange: '100', // kHz
+  confidenceThreshold: '85', // %
+  autoDeinterleave: true,
+  viterbiK7: true,
+  reedSolomon223: true,
+  ldpcEnabled: true,
+  sdrDevice: 'RTL-SDR v4 (2832U R828D Tuner)',
+  sampleRateNormalizer: 'Preserve Native Baseband Sample Rate',
+  airGapEnforced: true,
+  zeroizeMemoryOnExit: true,
+  theme: 'Dark Professional'
+};
+
 export default function SettingsPage() {
   const [collapsed, setCollapsed] = useState(false);
   const [savedToast, setSavedToast] = useState(false);
+  const [dspConfig, setDspConfig] = useState(DEFAULT_CONFIG);
 
-  // Settings State
-  const [dspConfig, setDspConfig] = useState({
-    fftRadix: 'Radix-2 Cooley-Tukey',
-    welchAverages: '8',
-    cfoSearchRange: '100', // kHz
-    confidenceThreshold: '85', // %
-    autoDeinterleave: true,
-    viterbiK7: true,
-    reedSolomon223: true,
-    ldpcEnabled: true,
-    sdrDevice: 'RTL-SDR v4 (2832U)',
-    sampleRateNormalizer: '4.096 Msps',
-    airGapEnforced: true,
-    zeroizeMemoryOnExit: true,
-    theme: 'Dark NTRO'
-  });
+  // Load configuration from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('sigscope_dsp_config');
+      if (saved) {
+        setDspConfig(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.warn('Could not read config from localStorage', e);
+    }
+  }, []);
 
   const handleSave = (e) => {
     e.preventDefault();
+    try {
+      localStorage.setItem('sigscope_dsp_config', JSON.stringify(dspConfig));
+    } catch (e) {}
     setSavedToast(true);
     setTimeout(() => setSavedToast(false), 2500);
   };
 
   const handleReset = () => {
-    setDspConfig({
-      fftRadix: 'Radix-2 Cooley-Tukey',
-      welchAverages: '8',
-      cfoSearchRange: '100',
-      confidenceThreshold: '85',
-      autoDeinterleave: true,
-      viterbiK7: true,
-      reedSolomon223: true,
-      ldpcEnabled: true,
-      sdrDevice: 'RTL-SDR v4 (2832U)',
-      sampleRateNormalizer: '4.096 Msps',
-      airGapEnforced: true,
-      zeroizeMemoryOnExit: true,
-      theme: 'Dark NTRO'
-    });
+    setDspConfig(DEFAULT_CONFIG);
+    try {
+      localStorage.setItem('sigscope_dsp_config', JSON.stringify(DEFAULT_CONFIG));
+    } catch (e) {}
     setSavedToast(true);
     setTimeout(() => setSavedToast(false), 2500);
   };
@@ -65,7 +69,7 @@ export default function SettingsPage() {
           {savedToast && (
             <div style={{ background: '#e3f6ec', border: '1px solid #a7f3d0', color: '#065f46', padding: '10px 16px', borderRadius: 8, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
               <CheckCircle2 size={16} color="#1f9d6b" />
-              <b>Configuration saved and applied to offline DSP engine.</b>
+              <b>Configuration saved and persisted to local session profile.</b>
             </div>
           )}
 
@@ -82,7 +86,7 @@ export default function SettingsPage() {
                 <div style={{ display: 'flex', gap: 16, fontSize: 11, color: '#9ca3af', flexWrap: 'wrap' }}>
                   <span>Team ID: <b style={{ color: '#e5e7eb' }}>145380</b></span>
                   <span>Team Name: <b style={{ color: '#e5e7eb' }}>Toll Tax (TT)</b></span>
-                  <span>Organization: <b style={{ color: '#e5e7eb' }}>NTRO Signal Intelligence Workstation</b></span>
+                  <span>Problem Sponsor: <b style={{ color: '#e5e7eb' }}>NTRO (National Technical Research Organisation)</b></span>
                   <span>Execution: <b style={{ color: '#34d399' }}>100% Offline Air-Gapped</b></span>
                 </div>
               </div>
@@ -99,7 +103,7 @@ export default function SettingsPage() {
               <div className="l">
                 {/* DSP Core Engine Settings */}
                 <div className="c">
-                  <h3><Cpu size={16} /> DSP Core Processing Engine</h3>
+                  <h3><Cpu size={16} /> DSP Pipeline Reference Parameters</h3>
                   
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                     <div className="form-group">
@@ -109,8 +113,8 @@ export default function SettingsPage() {
                         value={dspConfig.fftRadix}
                         onChange={e => setDspConfig({ ...dspConfig, fftRadix: e.target.value })}
                       >
-                        <option>Radix-2 Cooley-Tukey (In-Place Bit-Reversal)</option>
-                        <option>Radix-4 Mixed Radix</option>
+                        <option>Radix-2 Cooley-Tukey (SciPy / NumPy FFT)</option>
+                        <option>Direct Discrete Fourier Transform</option>
                         <option>Chirp-Z Transform (Fine-Resolution Zoom)</option>
                       </select>
                     </div>
@@ -145,10 +149,10 @@ export default function SettingsPage() {
                         value={dspConfig.sampleRateNormalizer}
                         onChange={e => setDspConfig({ ...dspConfig, sampleRateNormalizer: e.target.value })}
                       >
+                        <option>Preserve Native Baseband Sample Rate</option>
                         <option>4.096 Msps (Standard VHF/UHF IQ)</option>
                         <option>2.048 Msps (Medium Bandwidth)</option>
-                        <option>1.000 Msps (CubeSat Standard)</option>
-                        <option>48.0 kHz (Audio Baseband WAV)</option>
+                        <option>96.0 kHz (Audio Baseband WAV)</option>
                       </select>
                     </div>
                   </div>
@@ -161,7 +165,7 @@ export default function SettingsPage() {
                   <div className="form-group">
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                       <label className="form-label" style={{ margin: 0 }}>
-                        Confidence Acceptance Gate Threshold:
+                        Confidence Acceptance Gate (Honesty Gate Threshold):
                       </label>
                       <b style={{ fontSize: 11, color: '#1f9d6b' }}>{dspConfig.confidenceThreshold}%</b>
                     </div>
@@ -174,7 +178,7 @@ export default function SettingsPage() {
                       style={{ width: '100%', accentColor: '#1f9d6b' }}
                     />
                     <small style={{ color: '#6b7280', fontSize: 10 }}>
-                      Signals below this confidence score will be flagged for senior analyst manual triage.
+                      Signals below this threshold engage the DSP Honesty Gate and are flagged as Ambiguous / Low-SNR instead of fabricating a classification.
                     </small>
                   </div>
 
@@ -221,7 +225,7 @@ export default function SettingsPage() {
               {/* Right Column: Air-Gap & Security Policy */}
               <div className="r">
                 <div className="c">
-                  <h3><Shield size={16} /> Air-Gap & NTRO Security Policy</h3>
+                  <h3><Shield size={16} /> Host Isolation & Air-Gap Security Policy</h3>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 11.5, cursor: 'pointer' }}>
@@ -232,9 +236,9 @@ export default function SettingsPage() {
                         style={{ marginTop: 2 }}
                       />
                       <div>
-                        <b>Enforce Strict Air-Gapped Mode</b>
+                        <b>Enforce Strict Air-Gapped Execution</b>
                         <small style={{ display: 'block', color: '#6b7280', fontSize: 10 }}>
-                          Blocks all outbound telemetry and restricts processing to memory sandbox.
+                          Blocks all outbound telemetry and restricts processing to local machine sandbox.
                         </small>
                       </div>
                     </label>
@@ -247,9 +251,9 @@ export default function SettingsPage() {
                         style={{ marginTop: 2 }}
                       />
                       <div>
-                        <b>Zeroize Buffers on Session Exit</b>
+                        <b>Purge Temporary Session Memory on Exit</b>
                         <small style={{ display: 'block', color: '#6b7280', fontSize: 10 }}>
-                          Overwrites temporary IQ and audio buffers with 0x00 pattern upon teardown.
+                          Clears browser memory, session blobs, and temporary upload caches upon teardown.
                         </small>
                       </div>
                     </label>
@@ -287,8 +291,8 @@ export default function SettingsPage() {
                 <div className="ok">
                   <Lock size={24} color="#1f9d6b" style={{ flexShrink: 0 }} />
                   <div>
-                    <b style={{ fontSize: 12 }}>Local Machine Air-Gapped</b>
-                    <small>Operating strictly within NTRO analyst local perimeter.</small>
+                    <b style={{ fontSize: 12 }}>Localhost Air-Gapped Sandbox</b>
+                    <small>Operating in isolated local process space with zero external cloud dependencies.</small>
                   </div>
                 </div>
               </div>
