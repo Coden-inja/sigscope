@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { 
   FileText, Activity, Grip, ShieldCheck, LayoutGrid, Link2, 
   CheckCircle2, AlertTriangle, Cpu, Shield, BookOpen, Layers, 
@@ -493,3 +494,80 @@ export function ArchitectureView() {
     </div>
   );
 }
+
+export function SystemBlueprintView({ initialTab = 'DSP Pipeline' }) {
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  const tabs = [
+    { id: 'DSP Pipeline', label: '1. DSP Mathematical Pipeline', icon: Cpu, badge: '5 Stages' },
+    { id: 'Architecture', label: '2. Space & Edge Architecture', icon: Shield, badge: 'Air-Gap / COTS' },
+    { id: 'Documentation', label: '3. Engineering Specifications', icon: BookOpen, badge: 'Math Proofs' },
+  ];
+
+  return (
+    <div style={{ background: '#fff', minHeight: '100%', borderRadius: 12, overflow: 'hidden' }}>
+      {/* Sub-navigation tab bar */}
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: 12, 
+        padding: '16px 28px', 
+        background: '#f8fafc', 
+        borderBottom: '1px solid #e2e8f0',
+        flexWrap: 'wrap'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 8 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#1f9d6b' }}>
+            System Blueprint:
+          </span>
+        </div>
+        {tabs.map(t => {
+          const Icon = t.icon;
+          const isActive = activeTab === t.id;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setActiveTab(t.id)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '9px 16px',
+                borderRadius: 8,
+                border: isActive ? '1px solid #1f9d6b' : '1px solid #e2e8f0',
+                background: isActive ? '#eaf7f0' : '#fff',
+                color: isActive ? '#1f9d6b' : '#475569',
+                fontWeight: isActive ? 700 : 500,
+                fontSize: 13,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <Icon size={16} />
+              <span>{t.label}</span>
+              <span style={{
+                fontSize: 10,
+                padding: '2px 6px',
+                borderRadius: 4,
+                background: isActive ? '#1f9d6b' : '#f1f5f9',
+                color: isActive ? '#fff' : '#64748b',
+                fontWeight: 600
+              }}>
+                {t.badge}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Render selected view */}
+      <div>
+        {activeTab === 'DSP Pipeline' && <DspPipelineView />}
+        {activeTab === 'Architecture' && <ArchitectureView />}
+        {activeTab === 'Documentation' && <DocumentationView />}
+      </div>
+    </div>
+  );
+}
+

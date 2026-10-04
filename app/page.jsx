@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { FileText, Activity, BarChart3, Grip, ShieldCheck, LayoutGrid, Link2, Upload, MoreHorizontal, Radio, Settings, Home, ChevronDown, User, CheckCircle2, ChevronLeft, ChevronRight, ArrowRight, Timer, Layers, Waves, Signal, Clock, AlertTriangle, PlayCircle, PauseCircle, BookOpen, Cpu, Shield } from 'lucide-react';
 import { fetchIndex, fetchRun, hz, pct, ber, nInt, conf, bitsToBytes, bin, hx, asc } from '../lib/dataload';
-import { DocumentationView, DspPipelineView, ArchitectureView } from './components/SidebarViews';
+import { SystemBlueprintView } from './components/SidebarViews';
 
 const G = '#1b7f5c';
 const cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
@@ -170,6 +171,15 @@ export default function Page() {
   const [loadingStep, setLoadingStep] = useState(0);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('view') === 'blueprint') {
+        setNavTab('System Blueprint');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (!loading) { setLoadingStep(0); return; }
     const i = setInterval(() => setLoadingStep(s => Math.min(s + 1, 5)), 600);
     return () => clearInterval(i);
@@ -280,9 +290,11 @@ export default function Page() {
   return <div className="shell">
     <aside className="side">
       <div className="logo"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#e8e6e3" strokeWidth="2.4"><path d="M20 3l15 12-15 22L5 15z" /><path d="M12 17c4-6 8 6 16 0" /></svg><div><b>SIG-SCOPE</b><small>Signal Intelligence Platform</small></div></div>
-      {[[Home, 'Dashboard'], [BookOpen, 'Documentation'], [Cpu, 'DSP Pipeline'], [Shield, 'Architecture']].map(([I, n]) => (
-        <button key={n} className={`nav ${navTab === n ? 'a' : ''}`} onClick={() => setNavTab(n)}><I size={19} />{n}</button>
-      ))}
+      <button className={`nav ${navTab === 'Dashboard' ? 'a' : ''}`} onClick={() => setNavTab('Dashboard')}><Home size={18} />Dashboard</button>
+      <Link href="/live-sdr" className="nav" style={{ textDecoration: 'none' }}><Radio size={18} />Live SDR</Link>
+      <Link href="/reports" className="nav" style={{ textDecoration: 'none' }}><BarChart3 size={18} />Mission Reports</Link>
+      <button className={`nav ${navTab === 'System Blueprint' ? 'a' : ''}`} onClick={() => setNavTab('System Blueprint')}><Cpu size={18} />System Blueprint</button>
+      <Link href="/settings" className="nav" style={{ textDecoration: 'none' }}><Settings size={18} />Settings</Link>
       <svg className="wave" viewBox="0 0 228 120" fill="none" stroke="#c9b48f" strokeWidth="1.2"><path d="M0 80c20 0 24-4 40 0s20-60 34-40 16 70 34 30 20-70 32-50 20 50 40 30 30-20 48-10" /></svg>
       <div className="ntro"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#c9b48f" strokeWidth="1.6"><circle cx="24" cy="24" r="22" /><circle cx="24" cy="24" r="17" strokeDasharray="2 2" /><path d="M24 12l9 4v8c0 6-4 10-9 12-5-2-9-6-9-12v-8z" /></svg><div><b>NTRO</b><small>National Technical Research Organisation</small><small>Signal · Analysis · Security</small></div></div>
     </aside>
@@ -293,11 +305,9 @@ export default function Page() {
         <div className="usr"><span className="av"><User size={18} /></span><div><b style={{ fontSize: 12 }}>Analyst</b><small style={{ display: 'block', color: '#6b7280', fontSize: 10 }}>NTRO</small></div><ChevronDown size={14} /></div></header>
       <div style={{ position: 'relative', overflowY: 'auto' }}>
         <div className="main" style={{ paddingBottom: 60 }}>
-          {navTab !== 'Dashboard' ? (
-            <div className="c doc" style={{ padding: 0, maxWidth: 1100, margin: '20px auto', background: '#fff', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
-              {navTab === 'Documentation' && <DocumentationView />}
-              {navTab === 'DSP Pipeline' && <DspPipelineView />}
-              {navTab === 'Architecture' && <ArchitectureView />}
+          {navTab === 'System Blueprint' ? (
+            <div className="c doc" style={{ padding: 0, maxWidth: 1120, margin: '20px auto', background: '#fff', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
+              <SystemBlueprintView />
             </div>
           ) : (
             <>
