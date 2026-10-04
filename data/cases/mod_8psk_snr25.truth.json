@@ -1,0 +1,19 @@
+{
+  "modulation": "8PSK",
+  "fs_hz": 96000.0,
+  "rs_bps": 1200.0,
+  "sps": 80,
+  "snr_db": 25.0,
+  "cfo_hz": 0.0,
+  "phase_deg": 0.0,
+  "bits_per_symbol": 3,
+  "n_symbols": 2000,
+  "fec": "none",
+  "conv_k": null,
+  "code_rate": null,
+  "interleave": "none",
+  "header_bits": 88,
+  "generator_seed": 969814333,
+  "interleave_applied": false,
+  "actual_snr_db": 151.09
+}

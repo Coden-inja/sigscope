@@ -1,0 +1,459 @@
+{
+  "cases": [
+    {
+      "name": "mod_bpsk_snr25",
+      "group": "modulation",
+      "iq": "mod_bpsk_snr25.iq",
+      "wav": "mod_bpsk_snr25.wav",
+      "truth": "mod_bpsk_snr25.truth.json",
+      "expect": {
+        "modulation": "BPSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_bpsk_snr15",
+      "group": "modulation",
+      "iq": "mod_bpsk_snr15.iq",
+      "wav": "mod_bpsk_snr15.wav",
+      "truth": "mod_bpsk_snr15.truth.json",
+      "expect": {
+        "modulation": "BPSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_bpsk_snr10",
+      "group": "modulation",
+      "iq": "mod_bpsk_snr10.iq",
+      "wav": "mod_bpsk_snr10.wav",
+      "truth": "mod_bpsk_snr10.truth.json",
+      "expect": {
+        "modulation": "BPSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_bpsk_snr5",
+      "group": "modulation",
+      "iq": "mod_bpsk_snr5.iq",
+      "wav": "mod_bpsk_snr5.wav",
+      "truth": "mod_bpsk_snr5.truth.json",
+      "expect": {
+        "modulation": "BPSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_qpsk_snr25",
+      "group": "modulation",
+      "iq": "mod_qpsk_snr25.iq",
+      "wav": "mod_qpsk_snr25.wav",
+      "truth": "mod_qpsk_snr25.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_qpsk_snr15",
+      "group": "modulation",
+      "iq": "mod_qpsk_snr15.iq",
+      "wav": "mod_qpsk_snr15.wav",
+      "truth": "mod_qpsk_snr15.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_qpsk_snr10",
+      "group": "modulation",
+      "iq": "mod_qpsk_snr10.iq",
+      "wav": "mod_qpsk_snr10.wav",
+      "truth": "mod_qpsk_snr10.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_qpsk_snr5",
+      "group": "modulation",
+      "iq": "mod_qpsk_snr5.iq",
+      "wav": "mod_qpsk_snr5.wav",
+      "truth": "mod_qpsk_snr5.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_8psk_snr25",
+      "group": "modulation",
+      "iq": "mod_8psk_snr25.iq",
+      "wav": "mod_8psk_snr25.wav",
+      "truth": "mod_8psk_snr25.truth.json",
+      "expect": {
+        "modulation": "8PSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_8psk_snr15",
+      "group": "modulation",
+      "iq": "mod_8psk_snr15.iq",
+      "wav": "mod_8psk_snr15.wav",
+      "truth": "mod_8psk_snr15.truth.json",
+      "expect": {
+        "modulation": "8PSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_8psk_snr10",
+      "group": "modulation",
+      "iq": "mod_8psk_snr10.iq",
+      "wav": "mod_8psk_snr10.wav",
+      "truth": "mod_8psk_snr10.truth.json",
+      "expect": {
+        "modulation": "8PSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_8psk_snr5",
+      "group": "modulation",
+      "iq": "mod_8psk_snr5.iq",
+      "wav": "mod_8psk_snr5.wav",
+      "truth": "mod_8psk_snr5.truth.json",
+      "expect": {
+        "modulation": "8PSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_16qam_snr25",
+      "group": "modulation",
+      "iq": "mod_16qam_snr25.iq",
+      "wav": "mod_16qam_snr25.wav",
+      "truth": "mod_16qam_snr25.truth.json",
+      "expect": {
+        "modulation": "16QAM",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_16qam_snr15",
+      "group": "modulation",
+      "iq": "mod_16qam_snr15.iq",
+      "wav": "mod_16qam_snr15.wav",
+      "truth": "mod_16qam_snr15.truth.json",
+      "expect": {
+        "modulation": "16QAM",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_16qam_snr10",
+      "group": "modulation",
+      "iq": "mod_16qam_snr10.iq",
+      "wav": "mod_16qam_snr10.wav",
+      "truth": "mod_16qam_snr10.truth.json",
+      "expect": {
+        "modulation": "16QAM",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_16qam_snr5",
+      "group": "modulation",
+      "iq": "mod_16qam_snr5.iq",
+      "wav": "mod_16qam_snr5.wav",
+      "truth": "mod_16qam_snr5.truth.json",
+      "expect": {
+        "modulation": "16QAM",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_64qam_snr25",
+      "group": "modulation",
+      "iq": "mod_64qam_snr25.iq",
+      "wav": "mod_64qam_snr25.wav",
+      "truth": "mod_64qam_snr25.truth.json",
+      "expect": {
+        "modulation": "64QAM",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_64qam_snr15",
+      "group": "modulation",
+      "iq": "mod_64qam_snr15.iq",
+      "wav": "mod_64qam_snr15.wav",
+      "truth": "mod_64qam_snr15.truth.json",
+      "expect": {
+        "modulation": "64QAM",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_64qam_snr10",
+      "group": "modulation",
+      "iq": "mod_64qam_snr10.iq",
+      "wav": "mod_64qam_snr10.wav",
+      "truth": "mod_64qam_snr10.truth.json",
+      "expect": {
+        "modulation": "64QAM",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_64qam_snr5",
+      "group": "modulation",
+      "iq": "mod_64qam_snr5.iq",
+      "wav": "mod_64qam_snr5.wav",
+      "truth": "mod_64qam_snr5.truth.json",
+      "expect": {
+        "modulation": "64QAM",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_2fsk_snr25",
+      "group": "modulation",
+      "iq": "mod_2fsk_snr25.iq",
+      "wav": "mod_2fsk_snr25.wav",
+      "truth": "mod_2fsk_snr25.truth.json",
+      "expect": {
+        "modulation": "2FSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_2fsk_snr15",
+      "group": "modulation",
+      "iq": "mod_2fsk_snr15.iq",
+      "wav": "mod_2fsk_snr15.wav",
+      "truth": "mod_2fsk_snr15.truth.json",
+      "expect": {
+        "modulation": "2FSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_2fsk_snr10",
+      "group": "modulation",
+      "iq": "mod_2fsk_snr10.iq",
+      "wav": "mod_2fsk_snr10.wav",
+      "truth": "mod_2fsk_snr10.truth.json",
+      "expect": {
+        "modulation": "2FSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_2fsk_snr5",
+      "group": "modulation",
+      "iq": "mod_2fsk_snr5.iq",
+      "wav": "mod_2fsk_snr5.wav",
+      "truth": "mod_2fsk_snr5.truth.json",
+      "expect": {
+        "modulation": "2FSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_4fsk_snr25",
+      "group": "modulation",
+      "iq": "mod_4fsk_snr25.iq",
+      "wav": "mod_4fsk_snr25.wav",
+      "truth": "mod_4fsk_snr25.truth.json",
+      "expect": {
+        "modulation": "4FSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_4fsk_snr15",
+      "group": "modulation",
+      "iq": "mod_4fsk_snr15.iq",
+      "wav": "mod_4fsk_snr15.wav",
+      "truth": "mod_4fsk_snr15.truth.json",
+      "expect": {
+        "modulation": "4FSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_4fsk_snr10",
+      "group": "modulation",
+      "iq": "mod_4fsk_snr10.iq",
+      "wav": "mod_4fsk_snr10.wav",
+      "truth": "mod_4fsk_snr10.truth.json",
+      "expect": {
+        "modulation": "4FSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "mod_4fsk_snr5",
+      "group": "modulation",
+      "iq": "mod_4fsk_snr5.iq",
+      "wav": "mod_4fsk_snr5.wav",
+      "truth": "mod_4fsk_snr5.truth.json",
+      "expect": {
+        "modulation": "4FSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "rate_300bps_qpsk",
+      "group": "symbol-rate",
+      "iq": "rate_300bps_qpsk.iq",
+      "wav": "rate_300bps_qpsk.wav",
+      "truth": "rate_300bps_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "rs_bps": 300.0
+      }
+    },
+    {
+      "name": "rate_600bps_qpsk",
+      "group": "symbol-rate",
+      "iq": "rate_600bps_qpsk.iq",
+      "wav": "rate_600bps_qpsk.wav",
+      "truth": "rate_600bps_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "rs_bps": 600.0
+      }
+    },
+    {
+      "name": "rate_1200bps_qpsk",
+      "group": "symbol-rate",
+      "iq": "rate_1200bps_qpsk.iq",
+      "wav": "rate_1200bps_qpsk.wav",
+      "truth": "rate_1200bps_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "rs_bps": 1200.0
+      }
+    },
+    {
+      "name": "rate_2400bps_qpsk",
+      "group": "symbol-rate",
+      "iq": "rate_2400bps_qpsk.iq",
+      "wav": "rate_2400bps_qpsk.wav",
+      "truth": "rate_2400bps_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "rs_bps": 2400.0
+      }
+    },
+    {
+      "name": "rate_4800bps_qpsk",
+      "group": "symbol-rate",
+      "iq": "rate_4800bps_qpsk.iq",
+      "wav": "rate_4800bps_qpsk.wav",
+      "truth": "rate_4800bps_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "rs_bps": 4800.0
+      }
+    },
+    {
+      "name": "cfo_0hz_qpsk",
+      "group": "carrier-offset",
+      "iq": "cfo_0hz_qpsk.iq",
+      "wav": "cfo_0hz_qpsk.wav",
+      "truth": "cfo_0hz_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "cfo_hz": 0.0
+      }
+    },
+    {
+      "name": "cfo_500hz_qpsk",
+      "group": "carrier-offset",
+      "iq": "cfo_500hz_qpsk.iq",
+      "wav": "cfo_500hz_qpsk.wav",
+      "truth": "cfo_500hz_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "cfo_hz": 500.0
+      }
+    },
+    {
+      "name": "cfo_1500hz_qpsk",
+      "group": "carrier-offset",
+      "iq": "cfo_1500hz_qpsk.iq",
+      "wav": "cfo_1500hz_qpsk.wav",
+      "truth": "cfo_1500hz_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "cfo_hz": 1500.0
+      }
+    },
+    {
+      "name": "cfo_-2000hz_qpsk",
+      "group": "carrier-offset",
+      "iq": "cfo_-2000hz_qpsk.iq",
+      "wav": "cfo_-2000hz_qpsk.wav",
+      "truth": "cfo_-2000hz_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "cfo_hz": -2000.0
+      }
+    },
+    {
+      "name": "fec_conv_none",
+      "group": "fec",
+      "iq": "fec_conv_none.iq",
+      "wav": "fec_conv_none.wav",
+      "truth": "fec_conv_none.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "fec": "conv",
+        "interleave": "none"
+      }
+    },
+    {
+      "name": "fec_conv_block4x4",
+      "group": "fec",
+      "iq": "fec_conv_block4x4.iq",
+      "wav": "fec_conv_block4x4.wav",
+      "truth": "fec_conv_block4x4.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "fec": "conv",
+        "interleave": "block4x4"
+      }
+    },
+    {
+      "name": "fec_conv_block8x2",
+      "group": "fec",
+      "iq": "fec_conv_block8x2.iq",
+      "wav": "fec_conv_block8x2.wav",
+      "truth": "fec_conv_block8x2.truth.json",
+      "expect": {
+        "modulation": "QPSK",
+        "fec": "conv",
+        "interleave": "block8x2"
+      }
+    },
+    {
+      "name": "fmt_stereo_wav_qpsk",
+      "group": "format",
+      "iq": "fmt_stereo_wav_qpsk.iq",
+      "wav": "fmt_stereo_wav_qpsk.wav",
+      "truth": "fmt_stereo_wav_qpsk.truth.json",
+      "expect": {
+        "modulation": "QPSK"
+      }
+    }
+  ],
+  "n_cases": 41,
+  "note": "each case has an exact ground-truth sidecar"
+}

@@ -1,0 +1,137 @@
+{
+ "cases": [
+  {
+   "id": "fmt_stereo_wav_qpsk",
+   "modulation": "QPSK",
+   "modulation_used": "QPSK",
+   "snr_db": null,
+   "ber": null,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1448.0,
+   "duration_s": 2.0833,
+   "bytes": 525357
+  },
+  {
+   "id": "bpsk_20",
+   "modulation": "BPSK",
+   "modulation_used": "BPSK",
+   "snr_db": 20.0,
+   "ber": 0.0,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1396.5,
+   "duration_s": 3.3333,
+   "bytes": 550287
+  },
+  {
+   "id": "qpsk_20",
+   "modulation": "QPSK",
+   "modulation_used": "QPSK",
+   "snr_db": 20.0,
+   "ber": 0.0,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1393.1,
+   "duration_s": 1.6667,
+   "bytes": 516197
+  },
+  {
+   "id": "qpsk_12",
+   "modulation": "QPSK",
+   "modulation_used": "QPSK",
+   "snr_db": 12.0,
+   "ber": 0.0,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 63652.6,
+   "duration_s": 1.6667,
+   "bytes": 516295
+  },
+  {
+   "id": "qpsk_cfo300",
+   "modulation": "QPSK",
+   "modulation_used": "QPSK",
+   "snr_db": 20.0,
+   "ber": 0.0,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1395.3,
+   "duration_s": 1.6667,
+   "bytes": 516497
+  },
+  {
+   "id": "8psk_20",
+   "modulation": "8PSK",
+   "modulation_used": "8PSK",
+   "snr_db": 20.0,
+   "ber": 0.0,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1385.7,
+   "duration_s": 1.1108,
+   "bytes": 505537
+  },
+  {
+   "id": "16qam_20",
+   "modulation": "16QAM",
+   "modulation_used": "16QAM",
+   "snr_db": 20.0,
+   "ber": 0.0,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1382.1,
+   "duration_s": 0.8333,
+   "bytes": 498401
+  },
+  {
+   "id": "64qam_20",
+   "modulation": "64QAM",
+   "modulation_used": "64QAM",
+   "snr_db": 20.0,
+   "ber": 0.000501,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1394.5,
+   "duration_s": 0.555,
+   "bytes": 493297
+  },
+  {
+   "id": "fec_none",
+   "modulation": "QPSK",
+   "modulation_used": "QPSK",
+   "snr_db": 18.0,
+   "ber": 0.000333,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1439.2,
+   "duration_s": 2.505,
+   "bytes": 531894
+  },
+  {
+   "id": "fec_block4x4",
+   "modulation": "QPSK",
+   "modulation_used": "QPSK",
+   "snr_db": 18.0,
+   "ber": 0.001,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1442.1,
+   "duration_s": 2.505,
+   "bytes": 532936
+  },
+  {
+   "id": "fec_block8x2",
+   "modulation": "QPSK",
+   "modulation_used": "QPSK",
+   "snr_db": 18.0,
+   "ber": 0.000667,
+   "confidence": 1.0,
+   "rs_bps": 1200.0,
+   "bandwidth_hz": 1444.0,
+   "duration_s": 2.505,
+   "bytes": 532349
+  }
+ ],
+ "generated_utc": "2026-10-04T12:33:24+00:00"
+}

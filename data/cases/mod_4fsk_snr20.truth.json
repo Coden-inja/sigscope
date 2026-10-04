@@ -1,0 +1,18 @@
+{
+  "modulation": "4FSK",
+  "fs_hz": 96000.0,
+  "rs_bps": 1200.0,
+  "sps": 80,
+  "snr_db": 20.0,
+  "cfo_hz": 0.0,
+  "phase_deg": 0.0,
+  "bits_per_symbol": 1,
+  "n_symbols": 6000,
+  "fec": "none",
+  "conv_k": null,
+  "code_rate": null,
+  "interleave": "none",
+  "header_bits": 88,
+  "generator_seed": 357787741,
+  "actual_snr_db": 300.0
+}

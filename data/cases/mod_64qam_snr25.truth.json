@@ -1,0 +1,19 @@
+{
+  "modulation": "64QAM",
+  "fs_hz": 96000.0,
+  "rs_bps": 1200.0,
+  "sps": 80,
+  "snr_db": 25.0,
+  "cfo_hz": 0.0,
+  "phase_deg": 0.0,
+  "bits_per_symbol": 6,
+  "n_symbols": 1000,
+  "fec": "none",
+  "conv_k": null,
+  "code_rate": null,
+  "interleave": "none",
+  "header_bits": 88,
+  "generator_seed": 1964566920,
+  "interleave_applied": false,
+  "actual_snr_db": 300.0
+}

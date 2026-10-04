@@ -1,0 +1,1 @@
+"""SIG-SCOPE DSP core - real signal analysis, no mocks."""

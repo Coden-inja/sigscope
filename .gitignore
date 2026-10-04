@@ -1,0 +1,74 @@
+# Next.js / Node
+node_modules/
+.next/
+out/
+build/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.venv/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Project Specific Data / Outputs
+# Ignore all bulk binary dataset files (hosted on Google Drive)
+data/**/*.wav
+data/**/*.iq
+data/*.wav
+data/*.iq
+!data/fmt_stereo_wav_qpsk.wav
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Presentation & Submission Review Artifacts (User requested gitignored)
+SIG_SCOPE_SIH_Submission.md
+SIH2026-IDEA-Sigscope-256147.pdf
+SIH_Presentation_Review_and_Fixes.md
+SIG_SCOPE_YouTube_Demo_Script.md
+demo_video_assets/
+demo_video_assets.zip
+
