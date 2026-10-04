@@ -126,18 +126,19 @@ export default function Sidebar({ collapsed: propCollapsed, onToggle: propOnTogg
         </svg>
       )}
 
-      {/* NTRO Badge */}
-      <div className="ntro">
-        <svg width={isCollapsed ? "34" : "44"} height={isCollapsed ? "34" : "44"} viewBox="0 0 48 48" fill="none" stroke="#c9b48f" strokeWidth="1.6" style={{ flexShrink: 0 }}>
+      {/* Challenge Sponsor Attribution Badge */}
+      <div className="ntro" title="Problem Statement Sponsor: National Technical Research Organisation (SIH 2026)">
+        <svg width={isCollapsed ? "34" : "40"} height={isCollapsed ? "34" : "40"} viewBox="0 0 48 48" fill="none" stroke="#c9b48f" strokeWidth="1.6" style={{ flexShrink: 0 }}>
           <circle cx="24" cy="24" r="22" />
           <circle cx="24" cy="24" r="17" strokeDasharray="2 2" />
           <path d="M24 12l9 4v8c0 6-4 10-9 12-5-2-9-6-9-12v-8z" />
         </svg>
         {!isCollapsed && (
           <div className="ntro-text">
+            <span style={{ fontSize: 8.5, letterSpacing: '0.07em', color: '#c9b48f', textTransform: 'uppercase', fontWeight: 700, display: 'block', lineHeight: 1.2 }}>CHALLENGE SPONSOR</span>
             <b>NTRO</b>
             <small>National Technical Research Organisation</small>
-            <small>Signal · Analysis · Security</small>
+            <small style={{ color: '#8b949e', fontSize: 8 }}>Problem Statement SIH26147</small>
           </div>
         )}
       </div>

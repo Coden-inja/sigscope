@@ -2,7 +2,12 @@ import './globals.css';
 
 export const metadata = {
   title: 'SIG-SCOPE - Signal Intelligence Platform',
-  description: 'Automated Signal Intelligence & Parameter Extraction Platform - SIH 2026'
+  description: 'Automated Signal Intelligence & Parameter Extraction Platform - SIH 2026',
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg'
+  }
 };
 
 export default function RootLayout({ children }) {
