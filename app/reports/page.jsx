@@ -84,7 +84,7 @@ export default function ReportsPage() {
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
 
       <div className="content-area">
-        <Header subtitle="Signal Intelligence Reports & Mission Audit Dossiers" />
+        <Header subtitle="Signal Analysis & Benchmark Audit Dossiers" />
 
         <div className="main">
           {/* Mission Stats Row */}
@@ -92,28 +92,28 @@ export default function ReportsPage() {
             <div className="tile">
               <div className="tile-top">
                 <span className="tile-ic"><FileText size={14} /></span>
-                <span className="tile-lbl">Total Intercepts</span>
+                <span className="tile-lbl">Ingested Captures</span>
               </div>
-              <div className="tile-val"><b>{reports.length} Captures</b></div>
+              <div className="tile-val"><b>{reports.length} Benchmark Runs</b></div>
               <div className="tile-ftr">100% Processed Offline</div>
             </div>
 
             <div className="tile">
               <div className="tile-top">
                 <span className="tile-ic"><CheckCircle2 size={14} color="#1f9d6b" /></span>
-                <span className="tile-lbl">Verified Missions</span>
+                <span className="tile-lbl">Verified Benchmarks</span>
               </div>
               <div className="tile-val"><b>{reports.filter(r => r.status === 'Verified').length} Signals</b></div>
-              <div className="tile-ftr">Sync Word & CRC Valid</div>
+              <div className="tile-ftr">Sync Preamble & CRC Pass</div>
             </div>
 
             <div className="tile">
               <div className="tile-top">
                 <span className="tile-ic"><Shield size={14} /></span>
-                <span className="tile-lbl">Air-Gap Integrity</span>
+                <span className="tile-lbl">Air-Gap Execution</span>
               </div>
-              <div className="tile-val"><b>100% Local</b></div>
-              <div className="tile-ftr">0 Cloud Leaks</div>
+              <div className="tile-val"><b>100% Localhost</b></div>
+              <div className="tile-ftr">Zero Network Egress</div>
             </div>
 
             <div className="tile">
@@ -121,8 +121,8 @@ export default function ReportsPage() {
                 <span className="tile-ic"><BarChart2 size={14} /></span>
                 <span className="tile-lbl">Mean Confidence</span>
               </div>
-              <div className="tile-val"><b>96.8%</b></div>
-              <div className="tile-ftr">DSP + ML Consensus</div>
+              <div className="tile-val"><b>98.3%</b></div>
+              <div className="tile-ftr">Deterministic Cumulants (C42/C63)</div>
             </div>
           </div>
 
@@ -132,7 +132,7 @@ export default function ReportsPage() {
               <Search size={16} color="#6b7280" />
               <input 
                 type="text"
-                placeholder="Search by file, mission ID, or modulation..."
+                placeholder="Search by file, run ID, or modulation..."
                 className="form-input"
                 style={{ maxWidth: 320, padding: '5px 10px', fontSize: 11.5 }}
                 value={searchQuery}
@@ -142,16 +142,16 @@ export default function ReportsPage() {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Filter size={15} color="#6b7280" />
-              <span style={{ fontSize: 11, color: '#6b7280' }}>Classification:</span>
+              <span style={{ fontSize: 11, color: '#6b7280' }}>Benchmark Tier:</span>
               <select 
                 className="sel"
                 value={classFilter}
                 onChange={e => setClassFilter(e.target.value)}
               >
-                <option value="ALL">All Levels</option>
-                <option value="TOP SECRET">Top Secret</option>
-                <option value="SECRET">Secret</option>
-                <option value="RESTRICTED">Restricted</option>
+                <option value="ALL">All Tiers</option>
+                <option value="VERIFIED">Air-Capture Verified</option>
+                <option value="BENCHMARK">Synthetic Benchmarks</option>
+                <option value="STRESS-TEST">Doppler / CFO Stress</option>
               </select>
             </div>
 
@@ -161,7 +161,7 @@ export default function ReportsPage() {
               <Download size={14} /> Export CSV
             </button>
             <button className="btn d" onClick={exportAllJson}>
-              <Download size={14} /> Export Intelligence Dossier (JSON)
+              <Download size={14} /> Export Benchmark Dossier (JSON)
             </button>
           </div>
 
@@ -169,7 +169,7 @@ export default function ReportsPage() {
           <div className="c" style={{ marginTop: 14, padding: 0, overflow: 'hidden' }}>
             <div style={{ padding: '12px 18px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h3 style={{ margin: 0 }}>
-                <FileText size={16} /> Intercepted Signal Mission Log
+                <FileText size={16} /> Signal Analysis & Demodulation Benchmark Log
               </h3>
               <span style={{ fontSize: 11, color: '#6b7280' }}>Showing {filteredReports.length} records</span>
             </div>
@@ -178,13 +178,13 @@ export default function ReportsPage() {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Report ID</th>
-                    <th>Intercept File</th>
-                    <th>Classification</th>
+                    <th>Run ID</th>
+                    <th>Source Signal File</th>
+                    <th>Benchmark Tier</th>
                     <th>Frequency</th>
                     <th>Modulation</th>
                     <th>SNR</th>
-                    <th>CRC Check</th>
+                    <th>CRC / Syndrome</th>
                     <th>Confidence</th>
                     <th>Timestamp</th>
                     <th>Action</th>
@@ -192,9 +192,9 @@ export default function ReportsPage() {
                 </thead>
                 <tbody>
                   {filteredReports.map(r => {
-                    const isTop = r.classification.includes('TOP SECRET');
-                    const isSec = r.classification.includes('SECRET') && !isTop;
-                    const tagClass = isTop ? 'top-secret' : isSec ? 'secret' : 'restricted';
+                    const isStress = r.classification.includes('STRESS');
+                    const isBench = r.classification.includes('BENCHMARK');
+                    const tagClass = isStress ? 'top-secret' : isBench ? 'secret' : 'restricted';
 
                     return (
                       <tr key={r.id}>
@@ -249,7 +249,7 @@ export default function ReportsPage() {
             <div className="modal-header">
               <h3>
                 <Shield size={18} color="#1f9d6b" /> 
-                NTRO Mission Dossier: {selectedReport.id}
+                Signal Telemetry Dossier: {selectedReport.id}
               </h3>
               <button 
                 type="button" 
@@ -263,7 +263,7 @@ export default function ReportsPage() {
             <div className="modal-body">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, paddingBottom: 10, borderBottom: '1px solid #e5e7eb' }}>
                 <div>
-                  <span className={`class-tag ${selectedReport.classification.includes('TOP') ? 'top-secret' : 'secret'}`}>
+                  <span className={`class-tag ${selectedReport.classification.includes('STRESS') ? 'top-secret' : 'secret'}`}>
                     {selectedReport.classification}
                   </span>
                   <b style={{ marginLeft: 10, fontSize: 14 }}>{selectedReport.captureFile}</b>
@@ -289,7 +289,7 @@ export default function ReportsPage() {
               </div>
 
               <div className="c" style={{ background: '#f8fafc', marginBottom: 14 }}>
-                <b style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>Analyst Intelligence Notes:</b>
+                <b style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>DSP Pipeline Verification Notes:</b>
                 <p style={{ fontSize: 11.5, color: '#374151', lineHeight: 1.5, margin: 0 }}>
                   {selectedReport.notes}
                 </p>
@@ -306,11 +306,11 @@ export default function ReportsPage() {
 
               <div style={{ marginTop: 14, padding: '10px 14px', background: '#fafbfc', border: '1px solid #e5e7eb', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ fontSize: 10.5, color: '#6b7280' }}>
-                  Digitally Signed by <b>{selectedReport.analyst}</b><br />
-                  SIH 2026 Smart India Hackathon • Space Technology
+                  Validated by <b>{selectedReport.analyst}</b><br />
+                  SIH 2026 Smart India Hackathon • Problem Statement SIH1747
                 </div>
                 <div style={{ textAlign: 'right', fontSize: 10.5, color: '#1f9d6b', fontWeight: 600 }}>
-                  AUTHENTICATED OFF-LINE
+                  DETERMINISTIC DSP PROVEN
                 </div>
               </div>
             </div>

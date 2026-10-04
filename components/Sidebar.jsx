@@ -45,7 +45,7 @@ export default function Sidebar({ collapsed: propCollapsed, onToggle: propOnTogg
   const navItems = [
     { label: 'Dashboard', href: '/', icon: Home, isTab: true, tabName: 'Dashboard' },
     { label: 'Live SDR', href: '/live-sdr', icon: Radio },
-    { label: 'Mission Reports', href: '/reports', icon: BarChart2 },
+    { label: 'Signal Reports', href: '/reports', icon: BarChart2 },
     { label: 'System Blueprint', href: '/?view=blueprint', icon: Cpu, isTab: true, tabName: 'System Blueprint' },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
