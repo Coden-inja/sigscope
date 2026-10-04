@@ -153,15 +153,25 @@ export default function LiveSDRPage() {
       }
       frameCount++;
 
-      const W_spec = specC.clientWidth;
+      const W_spec = specC.clientWidth || 600;
       const H_spec = specC.clientHeight || 160;
-      specC.width = W_spec;
-      specC.height = H_spec;
+      if (specC.width !== W_spec || specC.height !== H_spec) {
+        specC.width = W_spec;
+        specC.height = H_spec;
+      }
 
-      const W_wf = wfC.clientWidth;
+      const W_wf = wfC.clientWidth || 600;
       const H_wf = wfC.clientHeight || 200;
-      wfC.width = W_wf;
-      wfC.height = H_wf;
+      if (wfC.width !== W_wf || wfC.height !== H_wf) {
+        wfC.width = W_wf;
+        wfC.height = H_wf;
+      }
+      if (off.width !== W_wf || off.height !== H_wf) {
+        off.width = W_wf;
+        off.height = H_wf;
+        offCtx.fillStyle = '#0b0f17';
+        offCtx.fillRect(0, 0, W_wf, H_wf);
+      }
 
       // 1. Obtain FFT Data
       if (inputSource === 'mic' && analyserRef.current) {
@@ -229,12 +239,10 @@ export default function LiveSDRPage() {
       specCtx.setLineDash([]);
 
       // 3. Scroll Waterfall downward
-      off.width = W_wf;
-      off.height = H_wf;
-      // Shift previous image down by 1px
-      offCtx.drawImage(wfC, 0, 1);
+      // Shift previous image down by 2px using offscreen buffer
+      offCtx.drawImage(off, 0, 0, W_wf, H_wf - 2, 0, 2, W_wf, H_wf - 2);
 
-      // Draw top new 1px line
+      // Draw top new 2px line
       for (let i = 0; i < numBins; i++) {
         const val = Math.max(0, Math.min(1, (spectrumData[i] + 95) / 65));
         const r = Math.floor(Math.max(0, Math.min(255, (1.5 - Math.abs(4 * val - 3)) * 255)));
@@ -242,7 +250,7 @@ export default function LiveSDRPage() {
         const b = Math.floor(Math.max(0, Math.min(255, (1.5 - Math.abs(4 * val - 1)) * 255)));
         offCtx.fillStyle = `rgb(${r},${g},${b})`;
         const bx = (i / numBins) * W_wf;
-        const bw = (W_wf / numBins) + 1;
+        const bw = Math.ceil(W_wf / numBins) + 1;
         offCtx.fillRect(bx, 0, bw, 2);
       }
 
