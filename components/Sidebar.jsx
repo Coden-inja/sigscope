@@ -15,7 +15,7 @@ import {
   Cpu
 } from 'lucide-react';
 
-export default function Sidebar({ collapsed: propCollapsed, onToggle: propOnToggle }) {
+export default function Sidebar({ collapsed: propCollapsed, onToggle: propOnToggle, activeNavTab, onSelectTab }) {
   const pathname = usePathname();
   const [internalCollapsed, setInternalCollapsed] = useState(false);
 
@@ -43,10 +43,10 @@ export default function Sidebar({ collapsed: propCollapsed, onToggle: propOnTogg
   };
 
   const navItems = [
-    { label: 'Dashboard', href: '/', icon: Home },
+    { label: 'Dashboard', href: '/', icon: Home, isTab: true, tabName: 'Dashboard' },
     { label: 'Live SDR', href: '/live-sdr', icon: Radio },
     { label: 'Mission Reports', href: '/reports', icon: BarChart2 },
-    { label: 'System Blueprint', href: '/?view=blueprint', icon: Cpu },
+    { label: 'System Blueprint', href: '/?view=blueprint', icon: Cpu, isTab: true, tabName: 'System Blueprint' },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
 
@@ -84,7 +84,27 @@ export default function Sidebar({ collapsed: propCollapsed, onToggle: propOnTogg
       <nav className="nav-container">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+          const isInPageTab = onSelectTab && pathname === '/' && item.isTab;
+          const isActive = isInPageTab 
+            ? activeNavTab === item.tabName
+            : (pathname === item.href || (item.href !== '/' && !item.href.includes('?') && pathname.startsWith(item.href)));
+
+          if (isInPageTab) {
+            return (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => onSelectTab(item.tabName)}
+                className={`nav ${isActive ? 'a' : ''}`}
+                style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer' }}
+                title={isCollapsed ? item.label : undefined}
+              >
+                <span className="nav-icon"><Icon size={19} /></span>
+                {!isCollapsed && <span className="nav-label">{item.label}</span>}
+              </button>
+            );
+          }
+
           return (
             <Link 
               key={item.href} 

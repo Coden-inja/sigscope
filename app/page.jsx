@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { FileText, Activity, BarChart3, Grip, ShieldCheck, LayoutGrid, Link2, Upload, MoreHorizontal, Radio, Settings, Home, ChevronDown, User, CheckCircle2, ChevronLeft, ChevronRight, ArrowRight, Timer, Layers, Waves, Signal, Clock, AlertTriangle, PlayCircle, PauseCircle, BookOpen, Cpu, Shield } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 import { fetchIndex, fetchRun, hz, pct, ber, nInt, conf, bitsToBytes, bin, hx, asc } from '../lib/dataload';
 import { SystemBlueprintView } from './components/SidebarViews';
 
@@ -61,21 +62,38 @@ const dSpec = (run, zoom) => (x, w, h) => {
   x.restore();
 };
 
-const dWf = (run, contrast = 1) => (x, w, h) => {
+const dWf = (run, contrast = 1, zoom = 1) => (x, w, h) => {
   const d = run?.viz?.waterfall;
   if (!d?.power?.length) return EMPTY(x, w, h, 'no waterfall');
-  dLog('renderingchart', 'dWf rendering', { contrast, rows: d.power.length, cols: d.power[0]?.length });
+  dLog('renderingchart', 'dWf rendering', { contrast, zoom, rows: d.power.length, cols: d.power[0]?.length });
   const M = d.power, f = d.freq, t = d.time;
   const f0 = f[0], f1 = f[f.length - 1];
-  const span = (f1 - f0);
+  const fullSpan = (f1 - f0);
+  const z = Math.max(1, zoom);
+  const span = fullSpan / z;
   const zf0 = -span / 2, zf1 = span / 2;
   
-  const a = ax(x, w, h, { x: [t[0], t[t.length - 1], (t[t.length - 1] - t[0]) / 4], y: [zf0, zf1, span / 4], fx: v => v.toFixed(0), xl: 'Time (ms)', yl: 'Frequency (kHz)' });
+  const a = ax(x, w, h, { 
+    x: [t[0], t[t.length - 1], (t[t.length - 1] - t[0]) / 4], 
+    y: [zf0, zf1, span / 4], 
+    fx: v => v.toFixed(0), 
+    xl: 'Time (ms)', 
+    yl: 'Frequency (kHz)' 
+  });
   const N = M.length, Mq = M[0].length;
 
-  for (let i = 0; i < N; i++) for (let j = 0; j < Mq; j++) {
-    x.fillStyle = jet(cl((M[i][j] / 127) * contrast));
-    x.fillRect(a.L + i * a.pw / N, a.T + (Mq - 1 - j) * a.ph / Mq, a.pw / N + .6, a.ph / Mq + .6);
+  for (let i = 0; i < N; i++) {
+    const xPos = a.L + i * a.pw / N;
+    const colW = a.pw / N + 0.6;
+    for (let j = 0; j < Mq; j++) {
+      const freqVal = f0 + (j / (Mq - 1)) * fullSpan;
+      if (freqVal < zf0 || freqVal > zf1) continue;
+      const yNorm = (freqVal - zf0) / span;
+      const yPos = a.T + (1 - yNorm) * a.ph;
+      const binH = (a.ph / (Mq / z)) + 0.8;
+      x.fillStyle = jet(cl((M[i][j] / 127) * contrast));
+      x.fillRect(xPos, yPos - binH / 2, colW, binH);
+    }
   }
   x.restore();
 };
@@ -163,6 +181,7 @@ export default function Page() {
   const [fmt, setFmt] = useState('Binary'), [pg, setPg] = useState(0);
   const [navTab, setNavTab] = useState('Dashboard');
   const [zoom, setZoom] = useState(1);
+  const [wfZoom, setWfZoom] = useState(1);
   const [wfContrast, setWfContrast] = useState(1);
   const [runKey, setRunKey] = useState(0);
   const fileInputRef = useRef(null);
@@ -217,12 +236,15 @@ export default function Page() {
       fetchRun(sel).then(r => { 
         setRun(r); 
         setLoading(false); 
-        // Auto-zoom based on bandwidth
+        // Auto-zoom spectrum and waterfall based on bandwidth
         if (r?.estimates?.bandwidth_hz && r?.source?.fs_hz) {
           const target = r.estimates.bandwidth_hz * 4; // Fill 25% of the screen with signal
           setZoom(Math.max(1, Math.min(100, r.source.fs_hz / target)));
+          const optWfZoom = Math.max(1, Math.min(25, (r.source.fs_hz / (r.estimates.bandwidth_hz * 2.8))));
+          setWfZoom(parseFloat(optWfZoom.toFixed(1)));
         } else {
           setZoom(1);
+          setWfZoom(1);
         }
       }).catch(e => { setErr(String(e.message || e)); setLoading(false); }); 
     } 
@@ -236,7 +258,7 @@ export default function Page() {
   }, [tab, run]);
 
   const drawSpecPlot = useMemo(() => dSpec(run, zoom), [run, zoom]);
-  const drawWfPlot = useMemo(() => dWf(run, wfContrast), [run, wfContrast]);
+  const drawWfPlot = useMemo(() => dWf(run, wfContrast, wfZoom), [run, wfContrast, wfZoom]);
 
   const bytes = useMemo(() => bitsToBytes(run?.bits), [run]);
   const LPP = 14;
@@ -288,16 +310,7 @@ export default function Page() {
   const reliable = dem?.confidence_reliable;
 
   return <div className="shell">
-    <aside className="side">
-      <div className="logo"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#e8e6e3" strokeWidth="2.4"><path d="M20 3l15 12-15 22L5 15z" /><path d="M12 17c4-6 8 6 16 0" /></svg><div><b>SIG-SCOPE</b><small>Signal Intelligence Platform</small></div></div>
-      <button className={`nav ${navTab === 'Dashboard' ? 'a' : ''}`} onClick={() => setNavTab('Dashboard')}><Home size={18} />Dashboard</button>
-      <Link href="/live-sdr" className="nav" style={{ textDecoration: 'none' }}><Radio size={18} />Live SDR</Link>
-      <Link href="/reports" className="nav" style={{ textDecoration: 'none' }}><BarChart3 size={18} />Mission Reports</Link>
-      <button className={`nav ${navTab === 'System Blueprint' ? 'a' : ''}`} onClick={() => setNavTab('System Blueprint')}><Cpu size={18} />System Blueprint</button>
-      <Link href="/settings" className="nav" style={{ textDecoration: 'none' }}><Settings size={18} />Settings</Link>
-      <svg className="wave" viewBox="0 0 228 120" fill="none" stroke="#c9b48f" strokeWidth="1.2"><path d="M0 80c20 0 24-4 40 0s20-60 34-40 16 70 34 30 20-70 32-50 20 50 40 30 30-20 48-10" /></svg>
-      <div className="ntro"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#c9b48f" strokeWidth="1.6"><circle cx="24" cy="24" r="22" /><circle cx="24" cy="24" r="17" strokeDasharray="2 2" /><path d="M24 12l9 4v8c0 6-4 10-9 12-5-2-9-6-9-12v-8z" /></svg><div><b>NTRO</b><small>National Technical Research Organisation</small><small>Signal · Analysis · Security</small></div></div>
-    </aside>
+    <Sidebar activeNavTab={navTab} onSelectTab={setNavTab} />
     <div className="content-area">
       <header className="top"><span className="t">From Raw Waveforms to Decoded Intelligence</span>
         <div className="off"><i /><div><b>Offline Mode</b><small>Local Processing</small></div></div>
@@ -354,10 +367,15 @@ export default function Page() {
               <Cv w={330} h={230} draw={drawSpecPlot} />
             </div>
             <div className="c">
-              <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
                 <span><Grip size={16} /> <span>Waterfall</span> <em>(STFT)</em></span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 'normal' }}>
-                  Contrast: <input type="range" min="0.4" max="2.5" step="0.1" value={wfContrast} onChange={e => setWfContrast(Number(e.target.value))} style={{ width: 75 }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 11, fontWeight: 'normal' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    Zoom: <input type="range" min="1" max="25" step="0.5" value={wfZoom} onChange={e => setWfZoom(Number(e.target.value))} style={{ width: 55 }} title={`Waterfall Zoom: ${wfZoom.toFixed(1)}x`} />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    Contrast: <input type="range" min="0.4" max="2.5" step="0.1" value={wfContrast} onChange={e => setWfContrast(Number(e.target.value))} style={{ width: 55 }} title={`Waterfall Contrast: ${wfContrast.toFixed(1)}x`} />
+                  </div>
                 </div>
               </h3>
               <div className="cb"><div style={{ flex: 1, minWidth: 0 }}><Cv w={290} h={230} draw={drawWfPlot} /></div><div className="bar" /><div className="cbl">{[0, -25, -50, -75, -100].map(v => <span key={v}>{v} dB</span>)}</div></div>
