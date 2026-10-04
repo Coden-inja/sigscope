@@ -1,6 +1,17 @@
 import './globals.css';
-import { Inter, JetBrains_Mono } from 'next/font/google';
-const inter = Inter({ subsets: ['latin'], variable: '--inter' });
-const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--mono' });
-export const metadata = { title: 'SIG-SCOPE', description: 'Signal Intelligence Platform' };
-export default function L({ children }) { return <html lang="en"><body className={`${inter.variable} ${mono.variable}`}>{children}</body></html> }
+
+export const metadata = {
+  title: 'SIG-SCOPE - Signal Intelligence Platform',
+  description: 'Automated Signal Intelligence & Parameter Extraction Platform - SIH 2026'
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
