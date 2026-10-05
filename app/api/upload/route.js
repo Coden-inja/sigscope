@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
+import { processSignalToDashboardRun } from '../../../lib/dsp';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
   try {
@@ -13,32 +14,37 @@ export async function POST(req) {
       return NextResponse.json({ error: "No file received." }, { status: 400 });
     }
 
+    const filename = file.name ? file.name.replace(/[^a-zA-Z0-9.\-_]/g, "") : "uploaded_capture.wav";
+    const cleanId = filename.replace(/\.[^/.]+$/, "");
     const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = file.name.replace(/[^a-zA-Z0-9.\-_]/g, ""); // sanitize
-    
-    const dataDir = path.join(process.cwd(), 'data');
-    if (!fs.existsSync(dataDir)) {
-      await mkdir(dataDir, { recursive: true });
-    }
-    
-    const filepath = path.join(dataDir, filename);
-    await writeFile(filepath, buffer);
 
-    // Run the python script
-    return new Promise((resolve) => {
-      exec(`python scripts/analyze.py --from-file data/${filename}`, (error, stdout, stderr) => {
-        if (error) {
-          console.error("Analysis error:", error);
-          console.error("stderr:", stderr);
-          return resolve(NextResponse.json({ error: error.message, stderr }, { status: 500 }));
-        }
-        
-        const case_id = filename.split('.')[0];
-        resolve(NextResponse.json({ success: true, case_id }));
-      });
+    // 1. If this matches an existing pre-computed benchmark case, read and return directly
+    const precomputedPath = path.join(process.cwd(), 'public', 'runs', `${cleanId}.json`);
+    if (fs.existsSync(precomputedPath)) {
+      try {
+        const fileContent = fs.readFileSync(precomputedPath, 'utf8');
+        const precomputedRun = JSON.parse(fileContent);
+        return NextResponse.json({
+          success: true,
+          case_id: cleanId,
+          run: precomputedRun,
+          isPrecomputed: true
+        });
+      } catch (e) {
+        // Fall back to in-memory DSP if reading precomputed fails
+      }
+    }
+
+    // 2. Perform high-speed in-memory DSP analysis (zero filesystem writes, zero Python)
+    const run = processSignalToDashboardRun(buffer, filename);
+
+    return NextResponse.json({
+      success: true,
+      case_id: cleanId,
+      run
     });
   } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Upload/Analysis error:", error);
+    return NextResponse.json({ error: error.message || 'Signal analysis failed' }, { status: 500 });
   }
 }

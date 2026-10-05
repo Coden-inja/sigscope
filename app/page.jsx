@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { FileText, Activity, BarChart3, Grip, ShieldCheck, LayoutGrid, Link2, Upload, MoreHorizontal, Radio, Settings, Home, ChevronDown, User, CheckCircle2, ChevronLeft, ChevronRight, ArrowRight, Timer, Layers, Waves, Signal, Clock, AlertTriangle, PlayCircle, PauseCircle, BookOpen, Cpu, Shield } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
-import { fetchIndex, fetchRun, hz, pct, ber, nInt, conf, bitsToBytes, bin, hx, asc } from '../lib/dataload';
+import { fetchIndex, fetchRun, cacheRun, hz, pct, ber, nInt, conf, bitsToBytes, bin, hx, asc } from '../lib/dataload';
 import { SystemBlueprintView } from './components/SidebarViews';
 
 const G = '#1b7f5c';
@@ -188,6 +188,8 @@ export default function Page() {
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
+  const [uploadError, setUploadError] = useState(null);
+  const [toastMsg, setToastMsg] = useState(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -208,7 +210,21 @@ export default function Page() {
     const file = e.target.files?.[0];
     if (!file) return;
     setLoading(true);
+    setUploadError(null);
+    setToastMsg(null);
     
+    // Quick client-side check: if it's already an indexed case, select it instantly
+    const baseId = file.name.replace(/\.[^/.]+$/, "");
+    const existing = idx?.cases?.find(c => c.id === baseId || c.id === file.name);
+    if (existing) {
+      setSel(existing.id);
+      setRunKey(k => k + 1);
+      setLoading(false);
+      setToastMsg(`Loaded pre-computed benchmark: ${existing.id}`);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     
@@ -217,13 +233,43 @@ export default function Page() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Upload failed');
       
-      // Reload index to get the new file
-      const i = await fetchIndex();
-      setIdx(i);
-      setSel(data.case_id);
-      setRunKey(k => k + 1);
+      if (data.run) {
+        cacheRun(data.case_id, data.run);
+        setRun(data.run);
+        
+        // Add new case to cases list so user can see it in dropdown
+        const newCaseMeta = {
+          id: data.case_id,
+          modulation: data.run.estimates?.modulation || data.run.demod?.modulation_used || 'QPSK',
+          modulation_used: data.run.demod?.modulation_used || 'QPSK',
+          snr_db: data.run.source?.measured_snr_db || null,
+          ber: data.run.demod?.ber || null,
+          confidence: data.run.demod?.confidence || 1.0,
+          rs_bps: data.run.estimates?.symbol_rate_bps || null,
+          bandwidth_hz: data.run.estimates?.bandwidth_hz || null,
+          duration_s: data.run.source?.duration_s || 0,
+          bytes: data.run.source?.n_samples ? data.run.source.n_samples * 4 : 0
+        };
+
+        setIdx(prev => {
+          if (!prev) return { cases: [newCaseMeta] };
+          const cases = [newCaseMeta, ...prev.cases.filter(c => c.id !== data.case_id)];
+          return { ...prev, cases };
+        });
+
+        setSel(data.case_id);
+        setRunKey(k => k + 1);
+        setToastMsg(`Successfully analyzed ${file.name} in memory`);
+      } else {
+        const i = await fetchIndex();
+        setIdx(i);
+        setSel(data.case_id);
+        setRunKey(k => k + 1);
+      }
+      setLoading(false);
     } catch (err) {
-      setErr("Analysis failed: " + String(err.message || err));
+      console.error("Upload error:", err);
+      setUploadError(String(err.message || err));
       setLoading(false);
     }
     // reset input
@@ -303,7 +349,17 @@ export default function Page() {
     ];
   }, [run]);
 
-  if (err) return <div className="shell"><div className="main"><div className="c"><h3><AlertTriangle size={16} /> No analysis data</h3><p style={{ fontSize: 12, color: '#6b7280' }}>{err}</p><code style={{ fontSize: 11 }}>python scripts/analyze.py</code></div></div></div>;
+  if (err) return (
+    <div className="shell">
+      <div className="main">
+        <div className="c" style={{ textAlign: 'center', padding: '40px 20px', maxWidth: 480, margin: '60px auto' }}>
+          <h3 style={{ justifyContent: 'center' }}><AlertTriangle size={20} color="#e02424" /> Signal Intelligence Offline</h3>
+          <p style={{ fontSize: 13, color: '#6b7280', margin: '8px 0 16px' }}>{err}</p>
+          <button className="btn" style={{ margin: '0 auto', display: 'inline-flex' }} onClick={() => { setErr(null); window.location.reload(); }}>Retry Connection</button>
+        </div>
+      </div>
+    </div>
+  );
   if (!idx) return <div className="shell"><div className="main"><div className="c"><p>Loading…</p></div></div></div>;
 
   const totalMs = run?.elapsed_ms ?? 0;
@@ -316,6 +372,24 @@ export default function Page() {
         <div className="off"><i /><div><b>Offline Mode</b><small>Local Processing</small></div></div>
         <ClockWidget />
         <div className="usr"><span className="av"><User size={18} /></span><div><b style={{ fontSize: 12 }}>Analyst</b><small style={{ display: 'block', color: '#6b7280', fontSize: 10 }}>NTRO</small></div><ChevronDown size={14} /></div></header>
+      {uploadError && (
+        <div style={{ margin: '12px 24px 0', padding: '10px 14px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#b91c1c', fontSize: 13 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <AlertTriangle size={16} />
+            <span><b>Upload Error:</b> {uploadError}</span>
+          </div>
+          <button onClick={() => setUploadError(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#b91c1c', fontSize: 18, lineHeight: 1 }}>×</button>
+        </div>
+      )}
+      {toastMsg && (
+        <div style={{ margin: '12px 24px 0', padding: '10px 14px', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#047857', fontSize: 13 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <CheckCircle2 size={16} />
+            <span>{toastMsg}</span>
+          </div>
+          <button onClick={() => setToastMsg(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#047857', fontSize: 18, lineHeight: 1 }}>×</button>
+        </div>
+      )}
       <div style={{ position: 'relative', overflowY: 'auto' }}>
         <div className="main" style={{ paddingBottom: 60 }}>
           {navTab === 'System Blueprint' ? (
