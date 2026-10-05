@@ -20,7 +20,7 @@ const DEFAULT_CONFIG = {
   sampleRateNormalizer: 'Preserve Native Baseband Sample Rate',
   airGapEnforced: true,
   zeroizeMemoryOnExit: true,
-  theme: 'Dark Professional'
+  theme: 'Light (Mission Control Daylight)'
 };
 
 export default function SettingsPage() {
@@ -74,24 +74,24 @@ export default function SettingsPage() {
           )}
 
           {/* Hackathon Problem Statement Banner */}
-          <div className="c" style={{ background: 'linear-gradient(135deg, #14161a 0%, #1e2430 100%)', color: '#fff', border: '1px solid #2d333f', marginBottom: 14, padding: '16px 20px' }}>
+          <div className="c" style={{ background: 'var(--bg-card)', backdropFilter: 'var(--card-backdrop)', WebkitBackdropFilter: 'var(--card-backdrop)', border: '1px solid var(--border-card)', marginBottom: 14, padding: '18px 24px', boxShadow: 'var(--card-shadow)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
               <div>
-                <span className="pill" style={{ background: 'rgba(31, 157, 107, 0.25)', color: '#34d399', fontSize: 10, padding: '2px 8px', marginBottom: 6 }}>
-                  SMART INDIA HACKATHON 2026 • SPACE TECHNOLOGY
+                <span className="status-dot-pill" style={{ marginBottom: 8 }}>
+                  <i></i> SMART INDIA HACKATHON 2026 • SPACE TECHNOLOGY
                 </span>
-                <h2 style={{ fontSize: 16, fontWeight: 700, margin: '4px 0 6px', color: '#f9fafb' }}>
+                <h2 style={{ fontSize: 16, fontWeight: 700, margin: '6px 0 8px', color: 'var(--text-main)' }}>
                   SIH26147: Automated model for analysis of .IQ and .wav files along with signal parameter extraction
                 </h2>
-                <div style={{ display: 'flex', gap: 16, fontSize: 11, color: '#9ca3af', flexWrap: 'wrap' }}>
-                  <span>Team ID: <b style={{ color: '#e5e7eb' }}>145380</b></span>
-                  <span>Team Name: <b style={{ color: '#e5e7eb' }}>Toll Tax (TT)</b></span>
-                  <span>Problem Sponsor: <b style={{ color: '#e5e7eb' }}>NTRO (National Technical Research Organisation)</b></span>
-                  <span>Execution: <b style={{ color: '#34d399' }}>100% Offline Air-Gapped</b></span>
+                <div style={{ display: 'flex', gap: 16, fontSize: 11.5, color: 'var(--text-secondary)', flexWrap: 'wrap' }}>
+                  <span>Team ID: <b style={{ color: 'var(--text-main)' }}>145380</b></span>
+                  <span>Team Name: <b style={{ color: 'var(--text-main)' }}>Toll Tax (TT)</b></span>
+                  <span>Problem Sponsor: <b style={{ color: 'var(--accent-purple)' }}>NTRO (National Technical Research Organisation)</b></span>
+                  <span>Execution: <b style={{ color: 'var(--accent-lime)' }}>100% Offline Air-Gapped</b></span>
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <span className="pill" style={{ background: '#1f9d6b', color: '#fff', fontWeight: 600, fontSize: 11 }}>
+                <span className="pill-btn white" style={{ height: 30, padding: '0 14px', fontSize: 11, cursor: 'default' }}>
                   SIG-SCOPE v1.0 Production
                 </span>
               </div>
@@ -259,8 +259,17 @@ export default function SettingsPage() {
                     </label>
                   </div>
 
-                  <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid #e5e7eb' }}>
-                    <span style={{ fontSize: 11, color: '#6b7280' }}>Default SDR Interface:</span>
+                  <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--border-subtle)' }}>
+                    <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Display Theme:</span>
+                    <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span className="pill-btn" style={{ background: 'rgba(255, 255, 255, 0.8)', border: '1px solid var(--border-card)', fontSize: 12, fontWeight: 600, color: 'var(--text-main)', padding: '6px 14px' }}>
+                        Light (Mission Control Daylight)
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--border-subtle)' }}>
+                    <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Default SDR Interface:</span>
                     <select 
                       className="form-select"
                       style={{ marginTop: 4 }}

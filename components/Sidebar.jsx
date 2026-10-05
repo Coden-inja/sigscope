@@ -40,12 +40,16 @@ export default function Sidebar({ collapsed: propCollapsed, onToggle: propOnTogg
     if (propOnToggle) {
       propOnToggle();
     }
+    // Dispatch resize after transition completes so all canvas charts recalculate exact pixel dimensions
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 280);
   };
 
   const navItems = [
     { label: 'Dashboard', href: '/', icon: Home, isTab: true, tabName: 'Dashboard' },
     { label: 'Live SDR', href: '/live-sdr', icon: Radio },
-    { label: 'Signal Reports', href: '/reports', icon: BarChart2 },
+    { label: 'Mission Reports', href: '/reports', icon: BarChart2 },
     { label: 'System Blueprint', href: '/?view=blueprint', icon: Cpu, isTab: true, tabName: 'System Blueprint' },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
@@ -67,14 +71,13 @@ export default function Sidebar({ collapsed: propCollapsed, onToggle: propOnTogg
       {/* Logo */}
       <Link href="/" className="logo-link">
         <div className="logo">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#e8e6e3" strokeWidth="2.4" style={{ flexShrink: 0 }}>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="2.4" style={{ flexShrink: 0, color: 'var(--accent-purple)' }}>
             <path d="M20 3l15 12-15 22L5 15z" />
             <path d="M12 17c4-6 8 6 16 0" />
           </svg>
           {!isCollapsed && (
             <div className="logo-text">
               <b>SIG-SCOPE</b>
-              <small>Signal Intelligence Platform</small>
             </div>
           )}
         </div>
@@ -119,26 +122,21 @@ export default function Sidebar({ collapsed: propCollapsed, onToggle: propOnTogg
         })}
       </nav>
 
-      {/* Wave decoration (hidden when collapsed) */}
-      {!isCollapsed && (
-        <svg className="wave" viewBox="0 0 228 120" fill="none" stroke="#c9b48f" strokeWidth="1.2">
-          <path d="M0 80c20 0 24-4 40 0s20-60 34-40 16 70 34 30 20-70 32-50 20 50 40 30 30-20 48-10" />
-        </svg>
-      )}
 
       {/* Challenge Sponsor Attribution Badge */}
       <div className="ntro" title="Problem Statement Sponsor: National Technical Research Organisation (SIH 2026)">
-        <svg width={isCollapsed ? "34" : "40"} height={isCollapsed ? "34" : "40"} viewBox="0 0 48 48" fill="none" stroke="#c9b48f" strokeWidth="1.6" style={{ flexShrink: 0 }}>
-          <circle cx="24" cy="24" r="22" />
-          <circle cx="24" cy="24" r="17" strokeDasharray="2 2" />
-          <path d="M24 12l9 4v8c0 6-4 10-9 12-5-2-9-6-9-12v-8z" />
+        <svg width={isCollapsed ? "32" : "36"} height={isCollapsed ? "32" : "36"} viewBox="0 0 48 48" fill="none" style={{ flexShrink: 0 }}>
+          <circle cx="24" cy="24" r="22" stroke="var(--accent-purple)" strokeWidth="1.5" strokeOpacity="0.4" />
+          <circle cx="24" cy="24" r="17" stroke="var(--accent-lime)" strokeWidth="1.2" strokeDasharray="3 3" />
+          <path d="M24 10l10 4.5v9c0 7-5 12-10 14.5-5-2.5-10-7.5-10-14.5v-9z" fill="rgba(109, 58, 232, 0.08)" stroke="var(--accent-purple)" strokeWidth="1.8" />
+          <circle cx="24" cy="23" r="3.5" fill="var(--accent-lime)" />
         </svg>
         {!isCollapsed && (
-          <div className="ntro-text">
-            <span style={{ fontSize: 8.5, letterSpacing: '0.07em', color: '#c9b48f', textTransform: 'uppercase', fontWeight: 700, display: 'block', lineHeight: 1.2 }}>CHALLENGE SPONSOR</span>
-            <b>NTRO</b>
-            <small>National Technical Research Organisation</small>
-            <small style={{ color: '#8b949e', fontSize: 8 }}>Problem Statement SIH26147</small>
+          <div className="ntro-text" style={{ minWidth: 0, flex: 1 }}>
+            <span style={{ fontSize: 9, letterSpacing: '0.06em', color: 'var(--accent-purple)', textTransform: 'uppercase', fontWeight: 700, display: 'block', lineHeight: 1.2 }}>SPONSOR</span>
+            <b style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-main)', letterSpacing: '0.02em', lineHeight: 1.2 }}>NTRO</b>
+            <small style={{ color: 'var(--text-secondary)', fontSize: 9.5, lineHeight: 1.25, display: 'block', marginTop: 1 }}>National Technical Research Organisation</small>
+            <span style={{ color: 'var(--text-muted)', fontSize: 8.5, display: 'block', marginTop: 2 }}>Problem Statement SIH26147</span>
           </div>
         )}
       </div>

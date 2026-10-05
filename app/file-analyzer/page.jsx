@@ -10,7 +10,7 @@ export default function FileAnalyzerPage() {
   }, [router]);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0b0f17', color: '#94a3b8' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-app-gradient, var(--bg-app))', color: 'var(--text-secondary)' }}>
       <p style={{ fontSize: 14 }}>Redirecting to SIG-SCOPE Dashboard...</p>
     </div>
   );

@@ -1,20 +1,26 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { User, ChevronDown, Shield, Check, Lock, Database, Cpu } from 'lucide-react';
+import { User, ChevronDown, Shield, Check, Lock, Sun, Moon } from 'lucide-react';
 
 export default function Header({ 
-  subtitle = 'From Raw Waveforms to Decoded Intelligence',
-  mockMode = false,
-  onToggleMock = null 
+  subtitle = 'From Raw Waveforms to Decoded Intelligence' 
 }) {
-  const [timeStr, setTimeStr] = useState('--:--:--');
+  const [timeLocal, setTimeLocal] = useState('--:--:--');
+  const [timeUtc, setTimeUtc] = useState('--:--:--');
   const [dateStr, setDateStr] = useState('');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-
   useEffect(() => {
+    try {
+      localStorage.setItem('sigscope_theme', 'light');
+      if (typeof document !== 'undefined') {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+
     const updateTime = () => {
       const now = new Date();
-      setTimeStr(now.toLocaleTimeString('en-GB'));
+      setTimeLocal(now.toLocaleTimeString('en-GB'));
+      setTimeUtc(now.toUTCString().slice(17, 25));
       setDateStr(now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }));
     };
     updateTime();
@@ -24,72 +30,68 @@ export default function Header({
 
   return (
     <header className="top">
-      <span className="t">{subtitle}</span>
+      <h1 className="top-title">
+        From Raw Waveforms <span style={{ color: 'var(--text-secondary)' }}>to Decoded Intelligence</span>
+      </h1>
 
-      {/* Mock Data / Real DSP Pipeline Toggle Button */}
-      <div className="mock-toggle-wrapper">
-        <button
-          type="button"
-          id="mock-mode-toggle-btn"
-          className={`mock-toggle-btn ${mockMode ? 'mock-active' : 'real-active'}`}
-          onClick={() => {
-            if (onToggleMock) onToggleMock(!mockMode);
-          }}
-          title={mockMode ? 'Switch to Real DSP Signal Breakdown Engine' : 'Switch to Static Mock Preset Baseline'}
-        >
-          {mockMode ? <Database size={13} /> : <Cpu size={13} />}
-          <span>{mockMode ? 'Mock Data: ON' : 'Real DSP: ACTIVE'}</span>
-          <span className={`mock-indicator ${mockMode ? 'amber' : 'green'}`} />
-        </button>
-      </div>
-
-      {/* Offline Mode indicator */}
-      <div className="off" title="Air-gapped local workstation processing: zero cloud communication">
+      {/* Offline Mode Pill with Green Dot */}
+      <div className="offline-pill" title="Local processing only">
         <i />
-        <div>
-          <b>Offline Mode</b>
-          <small>Local Processing</small>
-        </div>
+        <span>Offline Mode</span>
       </div>
 
-      {/* Real-time Digital Clock */}
-      <div className="clk">
-        {timeStr}
+      {/* Single Digital Clock with Date & UTC Tooltip */}
+      <div className="clk-single" title={`UTC: ${timeUtc} | Local Ground Station: ${timeLocal}`}>
+        <b>{timeLocal}</b>
         <small>{dateStr}</small>
       </div>
 
-      {/* User Profile */}
+      {/* Analyst/NTRO Menu */}
       <div 
-        className="usr" 
+        className="usr-chip" 
         onClick={() => setUserMenuOpen(!userMenuOpen)} 
         style={{ cursor: 'pointer', position: 'relative' }}
       >
-        <span className="av">
-          <User size={18} />
+        <span className="usr-av">
+          <User size={15} />
         </span>
-        <div>
-          <b style={{ fontSize: 12 }}>Operator</b>
-          <small style={{ display: 'block', color: '#6b7280', fontSize: 10 }}>Team 145380</small>
+        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
+          <b style={{ fontSize: 12, color: 'var(--text-main)' }}>Analyst</b>
+          <small style={{ color: 'var(--text-secondary)', fontSize: 10 }}>NTRO</small>
         </div>
-        <ChevronDown size={14} />
+        <ChevronDown size={14} color="var(--text-secondary)" style={{ marginLeft: 2 }} />
 
         {userMenuOpen && (
           <div 
-            className="user-dropdown-menu"
+            style={{
+              position: 'absolute',
+              top: '100%',
+              right: 0,
+              marginTop: 10,
+              background: 'var(--bg-card-elevated)',
+              backdropFilter: 'var(--card-backdrop)',
+              WebkitBackdropFilter: 'var(--card-backdrop)',
+              border: '1px solid var(--border-hairline)',
+              borderRadius: 16,
+              boxShadow: '0 12px 32px rgba(0, 0, 0, 0.12)',
+              padding: 14,
+              zIndex: 50,
+              minWidth: 230
+            }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="dropdown-header">
-              <b>Team Toll Tax (ID: 145380)</b>
-              <small>Station: Air-Gapped Localhost</small>
+            <div style={{ borderBottom: '1px solid var(--border-hairline)', paddingBottom: 8, marginBottom: 8 }}>
+              <b style={{ display: 'block', fontSize: 12, color: 'var(--text-main)' }}>NTRO SIGINT Division</b>
+              <small style={{ color: 'var(--text-secondary)', fontSize: 10 }}>Station: Air-Gapped Localhost</small>
             </div>
-            <div className="dropdown-item">
-              <Shield size={14} color="#1f9d6b" /> SIH 2026 Space Technology
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: 'var(--text-main)', padding: '4px 0' }}>
+              <Shield size={13} color="var(--accent-purple)" /> SIH 2026 Space Telemetry
             </div>
-            <div className="dropdown-item">
-              <Lock size={14} color="#6b7280" /> Air-Gap Status: Active (Zero Egress)
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: 'var(--text-secondary)', padding: '4px 0' }}>
+              <Lock size={13} color="var(--text-secondary)" /> Air-Gap Status: Active
             </div>
-            <div className="dropdown-item" style={{ color: '#1f9d6b' }}>
-              <Check size={14} /> DSP Engine: {mockMode ? 'Mock Emulated' : 'Real Active'}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: 'var(--accent-lime)', padding: '4px 0' }}>
+              <Check size={13} /> DSP Engine: Real Active
             </div>
           </div>
         )}

@@ -16,6 +16,7 @@ export default function ReportsPage() {
   const [selectedReport, setSelectedReport] = useState(null);
 
   useEffect(() => {
+    document.title = 'Mission Reports | SIG-SCOPE';
     fetchReports();
   }, []);
 
@@ -48,7 +49,9 @@ export default function ReportsPage() {
     const a = document.createElement('a');
     a.href = url;
     a.download = `SIGSCOPE_MISSION_LOG_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -66,12 +69,14 @@ export default function ReportsPage() {
       r.timestamp
     ]);
     const csvContent = [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `SIGSCOPE_INTELLIGENCE_AUDIT_${new Date().toISOString().slice(0,10)}.csv`;
+    a.download = `SIGSCOPE_MISSION_REPORTS_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -84,65 +89,77 @@ export default function ReportsPage() {
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
 
       <div className="content-area">
-        <Header subtitle="Signal Analysis & Benchmark Audit Dossiers" />
+        <Header />
 
         <div className="main">
+          {/* Breadcrumb & Page Title */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-secondary)', marginBottom: 6 }}>
+              <span>Dashboard</span>
+              <span>/</span>
+              <span style={{ color: 'var(--accent-purple)', fontWeight: 600 }}>Mission Reports</span>
+            </div>
+            <h1 style={{ fontSize: 28, fontWeight: 300, margin: 0, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
+              Mission Reports
+            </h1>
+          </div>
+
           {/* Mission Stats Row */}
-          <div className="tiles" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
+          <div className="tiles" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', marginBottom: 16 }}>
             <div className="tile">
               <div className="tile-top">
-                <span className="tile-ic"><FileText size={14} /></span>
+                <span className="tile-ic" style={{ color: 'var(--accent-purple)' }}><FileText size={15} /></span>
                 <span className="tile-lbl">Ingested Captures</span>
               </div>
               <div className="tile-val"><b>{reports.length} Benchmark Runs</b></div>
-              <div className="tile-ftr">100% Processed Offline</div>
+              <div className="tile-ftr">Offline processing</div>
             </div>
 
             <div className="tile">
               <div className="tile-top">
-                <span className="tile-ic"><CheckCircle2 size={14} color="#1f9d6b" /></span>
+                <span className="tile-ic" style={{ color: 'var(--accent-lime)' }}><CheckCircle2 size={15} /></span>
                 <span className="tile-lbl">Verified Benchmarks</span>
               </div>
               <div className="tile-val"><b>{reports.filter(r => r.status === 'Verified').length} Signals</b></div>
-              <div className="tile-ftr">Sync Preamble & CRC Pass</div>
+              <div className="tile-ftr">Sync preamble &amp; CRC pass</div>
             </div>
 
             <div className="tile">
               <div className="tile-top">
-                <span className="tile-ic"><Shield size={14} /></span>
-                <span className="tile-lbl">Air-Gap Execution</span>
+                <span className="tile-ic" style={{ color: 'var(--accent-purple)' }}><Shield size={15} /></span>
+                <span className="tile-lbl">Execution Mode</span>
               </div>
-              <div className="tile-val"><b>100% Localhost</b></div>
-              <div className="tile-ftr">Zero Network Egress</div>
+              <div className="tile-val"><b>Localhost</b></div>
+              <div className="tile-ftr">Air-gapped telemetry</div>
             </div>
 
             <div className="tile">
               <div className="tile-top">
-                <span className="tile-ic"><BarChart2 size={14} /></span>
+                <span className="tile-ic" style={{ color: 'var(--accent-lime)' }}><BarChart2 size={15} /></span>
                 <span className="tile-lbl">Mean Confidence</span>
               </div>
               <div className="tile-val"><b>98.3%</b></div>
-              <div className="tile-ftr">Deterministic Cumulants (C42/C63)</div>
+              <div className="tile-ftr">Cyclostationary cumulants</div>
             </div>
           </div>
 
           {/* Action & Filter Bar */}
-          <div className="c fh" style={{ marginTop: 14, flexWrap: 'wrap' }}>
+          <div className="c fh" style={{ marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 240 }}>
-              <Search size={16} color="#6b7280" />
+              <Search size={15} color="var(--text-secondary)" />
               <input 
                 type="text"
-                placeholder="Search by file, run ID, or modulation..."
+                placeholder="Search file, run ID, or modulation..."
                 className="form-input"
-                style={{ maxWidth: 320, padding: '5px 10px', fontSize: 11.5 }}
+                style={{ maxWidth: 320, padding: '7px 14px', fontSize: 12 }}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Filter size={15} color="#6b7280" />
-              <span style={{ fontSize: 11, color: '#6b7280' }}>Benchmark Tier:</span>
+              <Filter size={15} color="var(--text-secondary)" />
+              <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Benchmark Tier:</span>
               <select 
                 className="sel"
                 value={classFilter}
@@ -157,76 +174,86 @@ export default function ReportsPage() {
 
             <span className="sp" />
 
-            <button className="btn" onClick={exportCsv}>
+            <button className="pill-btn white" id="export-csv-btn" onClick={exportCsv}>
               <Download size={14} /> Export CSV
             </button>
-            <button className="btn d" onClick={exportAllJson}>
-              <Download size={14} /> Export Benchmark Dossier (JSON)
+            <button className="pill-btn dark" id="export-json-btn" onClick={exportAllJson}>
+              <Download size={14} /> Export JSON
             </button>
           </div>
 
           {/* Reports Log Table */}
-          <div className="c" style={{ marginTop: 14, padding: 0, overflow: 'hidden' }}>
-            <div style={{ padding: '12px 18px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ margin: 0 }}>
-                <FileText size={16} /> Signal Analysis & Demodulation Benchmark Log
+          <div className="c" style={{ padding: 0, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <FileText size={16} color="var(--accent-purple)" /> Demodulation Benchmark Log
               </h3>
-              <span style={{ fontSize: 11, color: '#6b7280' }}>Showing {filteredReports.length} records</span>
+              <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Showing {filteredReports.length} records</span>
             </div>
 
             <div style={{ overflowX: 'auto' }}>
-              <table className="data-table">
+              <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr>
-                    <th>Run ID</th>
-                    <th>Source Signal File</th>
-                    <th>Benchmark Tier</th>
-                    <th>Frequency</th>
-                    <th>Modulation</th>
-                    <th>SNR</th>
-                    <th>CRC / Syndrome</th>
-                    <th>Confidence</th>
-                    <th>Timestamp</th>
-                    <th>Action</th>
+                  <tr style={{ borderBottom: '1px solid var(--border-hairline)' }}>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Run ID</th>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Source Signal File</th>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Benchmark Tier</th>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Frequency</th>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Modulation</th>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>SNR</th>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>CRC</th>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Confidence</th>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Timestamp</th>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredReports.map(r => {
                     const isStress = r.classification.includes('STRESS');
                     const isBench = r.classification.includes('BENCHMARK');
-                    const tagClass = isStress ? 'top-secret' : isBench ? 'secret' : 'restricted';
+                    const badgeBg = isStress ? 'rgba(239, 68, 68, 0.12)' : isBench ? 'rgba(109, 58, 232, 0.12)' : 'rgba(22, 163, 74, 0.12)';
+                    const badgeColor = isStress ? '#DC2626' : isBench ? '#7C3AED' : '#16A34A';
 
                     return (
-                      <tr key={r.id}>
-                        <td style={{ fontFamily: 'var(--mono)', fontSize: 11, fontWeight: 600 }}>{r.id}</td>
-                        <td>
-                          <b>{r.captureFile}</b>
-                          <small style={{ display: 'block', color: '#6b7280', fontSize: 10 }}>{r.analyst}</small>
+                      <tr key={r.id} style={{ borderBottom: '1px solid var(--border-hairline)', transition: 'background 0.15s ease' }}>
+                        <td style={{ padding: '12px 18px', fontFamily: 'var(--mono)', fontSize: 11.5, color: 'var(--accent-purple)', fontWeight: 600 }}>{r.id}</td>
+                        <td style={{ padding: '12px 18px' }}>
+                          <b style={{ color: 'var(--text-main)', fontSize: 12.5 }}>{r.captureFile}</b>
+                          <small style={{ display: 'block', color: 'var(--text-secondary)', fontSize: 10.5 }}>{r.analyst}</small>
                         </td>
-                        <td>
-                          <span className={`class-tag ${tagClass}`}>{r.classification}</span>
+                        <td style={{ padding: '12px 18px' }}>
+                          <span style={{ 
+                            padding: '3px 8px', 
+                            borderRadius: 999, 
+                            fontSize: 10.5, 
+                            fontWeight: 600, 
+                            background: badgeBg, 
+                            color: badgeColor 
+                          }}>
+                            {r.classification}
+                          </span>
                         </td>
-                        <td>{r.frequency}</td>
-                        <td>
-                          <b>{r.modulation}</b>
-                          <small style={{ display: 'block', color: '#6b7280', fontSize: 9.5 }}>{r.symbolRate}</small>
+                        <td style={{ padding: '12px 18px', fontSize: 12, color: 'var(--text-main)' }}>{r.frequency}</td>
+                        <td style={{ padding: '12px 18px' }}>
+                          <b style={{ color: 'var(--text-main)', fontSize: 12 }}>{r.modulation}</b>
+                          <small style={{ display: 'block', color: 'var(--text-secondary)', fontSize: 10 }}>{r.symbolRate}</small>
                         </td>
-                        <td>{r.snr}</td>
-                        <td>
-                          <span className={`pill ${r.crcStatus.includes('Valid') ? '' : 'w'}`} style={{ padding: '2px 8px', fontSize: 10.5 }}>
+                        <td style={{ padding: '12px 18px', fontSize: 12, color: 'var(--text-main)' }}>{r.snr}</td>
+                        <td style={{ padding: '12px 18px' }}>
+                          <span className={`pill ${r.crcStatus.includes('Valid') ? '' : 'w'}`} style={{ padding: '3px 9px', fontSize: 10.5 }}>
                             {r.crcStatus.split(' ')[0]}
                           </span>
                         </td>
-                        <td>
-                          <span style={{ color: '#1f9d6b', fontWeight: 600 }}>{r.confidenceOverall}</span>
+                        <td style={{ padding: '12px 18px' }}>
+                          <span style={{ color: 'var(--accent-lime)', fontWeight: 600, fontSize: 12 }}>{r.confidenceOverall}</span>
                         </td>
-                        <td style={{ color: '#6b7280', fontSize: 10.5 }}>
+                        <td style={{ padding: '12px 18px', color: 'var(--text-secondary)', fontSize: 11 }}>
                           {new Date(r.timestamp).toLocaleString('en-GB')}
                         </td>
-                        <td>
+                        <td style={{ padding: '12px 18px' }}>
                           <button 
-                            className="btn" 
-                            style={{ padding: '3px 8px', fontSize: 11 }}
+                            className="pill-btn dark" 
+                            style={{ padding: '4px 12px', fontSize: 11, height: 28 }}
                             onClick={() => setSelectedReport(r)}
                           >
                             <Eye size={12} /> Dossier
@@ -245,78 +272,84 @@ export default function ReportsPage() {
       {/* Selected Report Detailed Dossier Modal */}
       {selectedReport && (
         <div className="modal-backdrop" onClick={() => setSelectedReport(null)}>
-          <div className="modal-box" style={{ maxWidth: 720 }} onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>
-                <Shield size={18} color="#1f9d6b" /> 
+          <div className="modal-content" style={{ maxWidth: 720 }} onClick={e => e.stopPropagation()}>
+            <div className="modal-header" style={{ borderBottom: '1px solid var(--border-hairline)', paddingBottom: 14, marginBottom: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Shield size={18} color="var(--accent-purple)" /> 
                 Signal Telemetry Dossier: {selectedReport.id}
               </h3>
               <button 
                 type="button" 
-                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                style={{ background: 'var(--bg-pill)', border: 'none', cursor: 'pointer', borderRadius: '50%', width: 32, height: 32, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)' }}
                 onClick={() => setSelectedReport(null)}
               >
-                <X size={18} color="#6b7280" />
+                <X size={16} />
               </button>
             </div>
 
             <div className="modal-body">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, paddingBottom: 10, borderBottom: '1px solid #e5e7eb' }}>
-                <div>
-                  <span className={`class-tag ${selectedReport.classification.includes('STRESS') ? 'top-secret' : 'secret'}`}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid var(--border-hairline)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ 
+                    padding: '3px 10px', 
+                    borderRadius: 999, 
+                    fontSize: 11, 
+                    fontWeight: 600, 
+                    background: selectedReport.classification.includes('STRESS') ? 'rgba(239,68,68,0.15)' : 'rgba(109,58,232,0.15)', 
+                    color: selectedReport.classification.includes('STRESS') ? '#DC2626' : '#6D3AE8' 
+                  }}>
                     {selectedReport.classification}
                   </span>
-                  <b style={{ marginLeft: 10, fontSize: 14 }}>{selectedReport.captureFile}</b>
+                  <b style={{ fontSize: 14, color: 'var(--text-main)' }}>{selectedReport.captureFile}</b>
                 </div>
-                <button className="btn" onClick={printDossier} style={{ fontSize: 11 }}>
+                <button className="pill-btn dark" onClick={printDossier} style={{ fontSize: 11, height: 28, padding: '0 12px' }}>
                   <Printer size={13} /> Print Dossier
                 </button>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, marginBottom: 14 }}>
-                <div className="inf" style={{ width: 'auto' }}>
-                  <span>Source Frequency:</span> <b>{selectedReport.frequency}</b><br />
-                  <span>Sample Rate:</span> <b>{selectedReport.sampleRate}</b><br />
-                  <span>Bandwidth:</span> <b>{selectedReport.bandwidth}</b><br />
-                  <span>Estimated SNR:</span> <b>{selectedReport.snr}</b>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginBottom: 16 }}>
+                <div className="tile" style={{ padding: 14 }}>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', marginBottom: 4 }}>Source Frequency: <b style={{ color: 'var(--text-main)' }}>{selectedReport.frequency}</b></div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', marginBottom: 4 }}>Sample Rate: <b style={{ color: 'var(--text-main)' }}>{selectedReport.sampleRate}</b></div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', marginBottom: 4 }}>Bandwidth: <b style={{ color: 'var(--text-main)' }}>{selectedReport.bandwidth}</b></div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-secondary)' }}>Estimated SNR: <b style={{ color: 'var(--text-main)' }}>{selectedReport.snr}</b></div>
                 </div>
-                <div className="inf" style={{ width: 'auto' }}>
-                  <span>Modulation:</span> <b>{selectedReport.modulation}</b><br />
-                  <span>Symbol Rate:</span> <b>{selectedReport.symbolRate}</b><br />
-                  <span>FEC Codec:</span> <b>{selectedReport.fec}</b><br />
-                  <span>Interleaving:</span> <b>{selectedReport.interleaving}</b>
+                <div className="tile" style={{ padding: 14 }}>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', marginBottom: 4 }}>Modulation: <b style={{ color: 'var(--text-main)' }}>{selectedReport.modulation}</b></div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', marginBottom: 4 }}>Symbol Rate: <b style={{ color: 'var(--text-main)' }}>{selectedReport.symbolRate}</b></div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', marginBottom: 4 }}>FEC Codec: <b style={{ color: 'var(--text-main)' }}>{selectedReport.fec}</b></div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-secondary)' }}>Interleaving: <b style={{ color: 'var(--text-main)' }}>{selectedReport.interleaving}</b></div>
                 </div>
               </div>
 
-              <div className="c" style={{ background: '#f8fafc', marginBottom: 14 }}>
-                <b style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>DSP Pipeline Verification Notes:</b>
-                <p style={{ fontSize: 11.5, color: '#374151', lineHeight: 1.5, margin: 0 }}>
+              <div className="tile" style={{ marginBottom: 16, padding: 16 }}>
+                <b style={{ fontSize: 12, color: 'var(--text-main)', display: 'block', marginBottom: 6 }}>DSP Pipeline Verification Notes:</b>
+                <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
                   {selectedReport.notes}
                 </p>
               </div>
 
-              <div className="c">
-                <b style={{ fontSize: 12, display: 'block', marginBottom: 6 }}>Frame & Sync Header:</b>
-                <div style={{ display: 'flex', gap: 16, fontSize: 11 }}>
-                  <span>Sync Word: <b style={{ fontFamily: 'var(--mono)', color: '#1f9d6b' }}>{selectedReport.syncWord}</b></span>
-                  <span>Payload Length: <b>{selectedReport.payloadLength}</b></span>
-                  <span>CRC Status: <b style={{ color: '#1f9d6b' }}>{selectedReport.crcStatus}</b></span>
+              <div className="tile" style={{ padding: 16 }}>
+                <b style={{ fontSize: 12, color: 'var(--text-main)', display: 'block', marginBottom: 8 }}>Frame &amp; Sync Header:</b>
+                <div style={{ display: 'flex', gap: 20, fontSize: 12, flexWrap: 'wrap' }}>
+                  <span>Sync Word: <b style={{ fontFamily: 'var(--mono)', color: 'var(--accent-purple)' }}>{selectedReport.syncWord}</b></span>
+                  <span>Payload Length: <b style={{ color: 'var(--text-main)' }}>{selectedReport.payloadLength}</b></span>
+                  <span>CRC Status: <b style={{ color: 'var(--accent-lime)' }}>{selectedReport.crcStatus}</b></span>
                 </div>
               </div>
 
-              <div style={{ marginTop: 14, padding: '10px 14px', background: '#fafbfc', border: '1px solid #e5e7eb', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontSize: 10.5, color: '#6b7280' }}>
-                  Validated by <b>{selectedReport.analyst}</b><br />
-                  SIH 2026 Smart India Hackathon • Problem Statement SIH1747
+              <div style={{ marginTop: 16, padding: '12px 16px', background: 'var(--bg-tile)', borderRadius: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
+                  Validated by <b style={{ color: 'var(--text-main)' }}>{selectedReport.analyst}</b> · SIH 2026 SIH1747
                 </div>
-                <div style={{ textAlign: 'right', fontSize: 10.5, color: '#1f9d6b', fontWeight: 600 }}>
-                  DETERMINISTIC DSP PROVEN
+                <div style={{ textAlign: 'right', fontSize: 11, color: 'var(--accent-lime)', fontWeight: 600 }}>
+                  Verified Offline DSP
                 </div>
               </div>
             </div>
 
-            <div className="modal-footer">
-              <button className="btn" onClick={() => setSelectedReport(null)}>
+            <div className="modal-footer" style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="pill-btn white" onClick={() => setSelectedReport(null)} style={{ padding: '8px 24px' }}>
                 Close
               </button>
             </div>
